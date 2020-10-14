@@ -1,0 +1,28 @@
+﻿@using asp_core_oauth.Controllers;
+@model OAuthRequestViewModel
+@{
+    ViewData["Title"] = "Authorize";
+    var scopeDesc = ((Dictionary<string, Scope>)ViewData["SCOPES"])[Model.Scope].Desc;
+}
+
+<div class="card">
+  <h5 class="card-header">An application would like to connect to your account</h5>
+  <div class="card-body">
+    <h5 class="card-title">The app <strong>@Model.ClientId</strong> would like the ability to to access your @scopeDesc</h5>
+    <p class="card-text">Allow <strong>@Model.ClientId</strong> access?</p>
+    <div class="row">
+        <div class="col-sm d-flex justify-content-end">
+            <form asp-action="Deny" method="POST">
+                <input type="hidden" name="code" value="@Model.Code">
+                <input type="submit" class="btn btn-primary" value="DENY">
+            </form>
+        </div>
+        <div class="col-sm">
+            <form asp-action="Allow" method="POST">
+                <input type="hidden" name="code" value="@Model.Code">
+                <input type="submit" class="btn btn-primary" value="ALLOW">
+            </form>
+        </div>
+    </div>
+  </div>
+</div>

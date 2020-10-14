@@ -1,0 +1,23 @@
+﻿@using asp_core_oauth.Controllers;
+@{
+    ViewData["Title"] = "Test OAuth";
+}
+
+<div class="text-center">
+    <h1 class="display-4">Test OAuth</h1>
+    <form asp-action="Auth" method="GET">
+        <input type="hidden" name="response_type" value="code">
+        <input type="string" name="client_id" value="@(ViewData["CLIENT_ID"])" readonly>
+        <select name="scope">
+            @{
+                foreach (var scope in (Dictionary<string, Scope>)ViewData["SCOPES"])
+                {
+            <option>@scope.Key</option>
+                }
+            }
+        </select>
+        <input type="hidden" name="redirect_uri" value="@Context.Request.Scheme://@Context.Request.Host/OAuth/Callback">
+        <input type="hidden" name="state" value="@(ViewData["STATE"])">
+        <input type="submit" value="Submit">
+    </form>
+</div>
