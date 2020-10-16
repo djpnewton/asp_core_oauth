@@ -123,6 +123,8 @@ namespace asp_core_oauth.Controllers
             if (!CLIENT_IDS.ContainsKey(model.ClientId))
                 return BadRequest("invalid client_id");
             // valid scope
+            if (string.IsNullOrEmpty(model.Scope))
+                return BadRequest("invalid scope");
             foreach (var scope in model.Scope.Split(' '))
                 if (!SCOPES.ContainsKey(scope))
                     return BadRequest("invalid scope");

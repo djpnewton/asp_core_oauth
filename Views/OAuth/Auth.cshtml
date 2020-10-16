@@ -2,7 +2,14 @@
 @model OAuthRequestViewModel
 @{
     ViewData["Title"] = "Authorize";
-    var scopeDesc = ((Dictionary<string, Scope>)ViewData["SCOPES"])[Model.Scope].Desc;
+    var scopeDesc = "";
+    var scopes = (Dictionary<string, Scope>)ViewData["SCOPES"];
+    foreach (var scope in Model.Scope.Split(' '))
+    {
+        if (scopeDesc != "")
+            scopeDesc = scopeDesc + ", ";
+        scopeDesc = scopeDesc + scopes[scope].Desc;
+    }
 }
 
 <div class="card">
