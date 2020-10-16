@@ -65,11 +65,11 @@ namespace asp_core_oauth.Controllers
             var url = Url.Action("Token", "OAuth", null, Request.Scheme);
             var redirectUri = Url.Action("Callback", "OAuth", null, Request.Scheme);
             var resp = await Requests.Post(url)
-                              .Parameter("grant_type", "authorization_code")
-                              .Parameter("code", code)
-                              .Parameter("redirect_uri", redirectUri)
-                              .Parameter("client_id", CLIENT_ID)
-                              .Parameter("client_secret", CLIENT_SECRET)
+                              .Form("grant_type", "authorization_code")
+                              .Form("code", code)
+                              .Form("redirect_uri", redirectUri)
+                              .Form("client_id", CLIENT_ID)
+                              .Form("client_secret", CLIENT_SECRET)
                               .ExecuteAsync();
             var result = resp.Json.ToString();
             var token = resp.Json.ToObject<OAuthTokenViewModel>();
@@ -162,10 +162,10 @@ namespace asp_core_oauth.Controllers
 
         [HttpPost]
         [Produces("application/json")]
-        public ActionResult<OAuthTokenViewModel> Token([FromQuery] OAuthTokenRequestViewModel model)
+        public ActionResult<OAuthTokenViewModel> Token([FromForm] OAuthTokenRequestViewModel model)
         {
             if (model.GrantType != "authorization_code")
-                return BadRequest(new OAuthTokenErrorViewModel{ Error = "invalid grant type" });
+                return BadRequest(new OAuthTokenErrorViewModel{ Error = string.Format("invalid grant type ({0})", model.GrantType) });
             if (!_requests.ContainsKey(model.Code))
                 return BadRequest(new OAuthTokenErrorViewModel{ Error = "invalid code" });
             var req = _requests[model.Code];

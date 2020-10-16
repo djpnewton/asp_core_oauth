@@ -23,16 +23,15 @@ namespace asp_core_oauth.Models
     }
 
     public class OAuthTokenRequestViewModel {
-        [FromQuery(Name = "grant_type")]
+        [FromForm(Name = "grant_type")]
         public string GrantType { get; set; }
-        [Required]
-        [FromQuery(Name = "code")]
+        [FromForm(Name = "code")]
         public string Code { get; set; }
-        [FromQuery(Name = "redirect_uri")]
+        [FromForm(Name = "redirect_uri")]
         public string RedirectUri { get; set; }
-        [FromQuery(Name = "client_id")]
+        [FromForm(Name = "client_id")]
         public string ClientId { get; set; }
-        [FromQuery(Name = "client_secret")]
+        [FromForm(Name = "client_secret")]
         public string ClientSecret { get; set; }
     }
 
