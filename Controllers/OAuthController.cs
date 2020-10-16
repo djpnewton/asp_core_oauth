@@ -123,8 +123,9 @@ namespace asp_core_oauth.Controllers
             if (!CLIENT_IDS.ContainsKey(model.ClientId))
                 return BadRequest("invalid client_id");
             // valid scope
-            if (!SCOPES.ContainsKey(model.Scope))
-                return BadRequest("invalid scope");
+            foreach (var scope in model.Scope.Split(' '))
+                if (!SCOPES.ContainsKey(scope))
+                    return BadRequest("invalid scope");
 
             model.Allow = false;
             model.Code = CreateToken(8);
@@ -206,6 +207,14 @@ namespace asp_core_oauth.Controllers
             return token;
         }
 
+        bool CheckScope(string allowedScopes, string requestedScope)
+        {
+            foreach (var scope in allowedScopes.Split(' '))
+                if (scope == requestedScope)
+                    return true;
+            return false;
+        }
+
         public IActionResult Validate()
         {
             if (CheckAuth() == null)
@@ -218,7 +227,7 @@ namespace asp_core_oauth.Controllers
             var token = CheckAuth();
             if (token == null)
                 return Unauthorized();
-            if (token.Scope != SOCKS)
+            if (!CheckScope(token.Scope, SOCKS))
                 return Unauthorized();
             return Ok(SCOPES[SOCKS].Value);
         }
@@ -228,7 +237,7 @@ namespace asp_core_oauth.Controllers
             var token = CheckAuth();
             if (token == null)
                 return Unauthorized();
-            if (token.Scope != SHOES)
+            if (!CheckScope(token.Scope, SHOES))
                 return Unauthorized();
             return Ok(SCOPES[SHOES].Value);
         }
