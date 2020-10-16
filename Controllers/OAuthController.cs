@@ -58,10 +58,12 @@ namespace asp_core_oauth.Controllers
             return View();
         }
 
-        public async Task<IActionResult> Callback(string code, string state)
+        public async Task<IActionResult> Callback(string code, string error, string state)
         {
             if (state != CLIENT_STATE)
                 return BadRequest("invalid state");
+            if (string.IsNullOrEmpty(code) && !string.IsNullOrEmpty(error))
+                return BadRequest("The request was denied");
             var url = Url.Action("Token", "OAuth", null, Request.Scheme);
             var redirectUri = Url.Action("Callback", "OAuth", null, Request.Scheme);
             var resp = await Requests.Post(url)
@@ -144,7 +146,8 @@ namespace asp_core_oauth.Controllers
                 return BadRequest("invalid code");
             var req = _requests[code];
             _requests.Remove(code);
-            return Redirect(req.RedirectUri);
+            var uri = string.Format("{0}?error=access_denied&state={1}", req.RedirectUri, Uri.EscapeDataString(req.State));
+            return Redirect(uri);
         }
 
         [HttpPost]
